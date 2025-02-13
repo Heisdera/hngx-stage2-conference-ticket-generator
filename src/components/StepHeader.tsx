@@ -6,7 +6,7 @@ interface StepHeaderProp {
 export const StepHeader = ({ title, currentStep }: StepHeaderProp) => {
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex flex-col gap-2 items-start sm:items-center sm:justify-between sm:flex-row">
+      <div className="flex gap-2 items-end justify-between">
         <h1 className="text-white text-2xl md:text-[32px]">{title}</h1>
 
         <span className="text-neutral-98 font-['Roboto']">
