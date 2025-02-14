@@ -7,14 +7,17 @@ import { useTicketForm } from "@/store/ticket-form-store";
 import { useEffect } from "react";
 
 export const FormContentWrapper = () => {
-  const { step, completedSteps, setStep } = useTicketForm();
+  const { step, completedSteps, setStep, reset, ticketType, ticketQuantity } =
+    useTicketForm();
 
   useEffect(() => {
-    // Ensure users can't jump ahead of completed steps
-    if (step > completedSteps + 1) {
-      setStep(completedSteps + 1); // Redirect back to the next step to be completed
+    // Ensure users can't jump ahead of steps down to step 3 using localStorage without step 1 data
+    if (step >= 2 && !ticketType && !ticketQuantity) {
+      // Redirect back to step 1 instead and reset form
+      setStep(1);
+      reset();
     }
-  }, [step, completedSteps, setStep]);
+  }, [step, completedSteps, setStep, reset, ticketType, ticketQuantity]);
 
   return (
     <main className="max-w-[700px] bg-teal-8 p-5 flex flex-col gap-8 border border-teal-18 rounded-3xl mx-auto md:px-9 md:py-8">

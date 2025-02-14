@@ -7,7 +7,16 @@ import { ScrollArea } from "../ui/scroll-area";
 import { useTicketForm } from "@/store/ticket-form-store";
 
 export const ReadyTicketPreview = () => {
-  const { step, reset, name, email, image, specialRequest } = useTicketForm();
+  const {
+    step,
+    reset,
+    name,
+    email,
+    image,
+    specialRequest,
+    ticketType,
+    ticketQuantity,
+  } = useTicketForm();
 
   return (
     <div className="flex flex-col gap-6">
@@ -73,14 +82,16 @@ export const ReadyTicketPreview = () => {
 
                 <div className="p-1 flex flex-col items-start justify-start border-r border-[#12464e]">
                   <div className="opacity-30 text-[10px]">Ticket Type:</div>
-                  <p className="text-[10px]">VIP</p>
+                  <p className="text-[10px] uppercase">
+                    {ticketType?.price === 0 ? "Free" : ticketType?.label}
+                  </p>
                 </div>
 
                 <div className="p-1 flex flex-col items-start justify-start">
                   <div className="opacity-30 text-[10px] leading-[15px]">
                     Ticket for:
                   </div>
-                  <p className="text-[10px] leading-[15px]">1</p>
+                  <p className="text-[10px] leading-[15px]">{ticketQuantity}</p>
                 </div>
 
                 <div className="col-span-2 p-1 flex flex-col items-start justify-start border-t border-[#12464e]">

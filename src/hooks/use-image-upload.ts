@@ -14,13 +14,7 @@ const imageSchema = z.object({
     .instanceof(File, { message: "Please upload an image" })
     .refine((file) => file.size <= MAX_IMAGE_FILE_SIZE, {
       message: "File size exceeds 3MB",
-    })
-    .refine(
-      (file) => ["image/jpeg", "image/png", "image/gif"].includes(file.type),
-      {
-        message: "File type must be JPEG, PNG, or GIF",
-      }
-    ),
+    }),
 });
 
 export function useImageUpload({
@@ -38,10 +32,7 @@ export function useImageUpload({
   const handleFileChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
-      if (!file) {
-        setError("Please upload an image");
-        return;
-      }
+      if (!file) return;
 
       const validationResult = imageSchema.safeParse({ image: file });
 
@@ -97,7 +88,7 @@ export function useImageUpload({
   );
 
   const handleRemove = useCallback(() => {
-    onImageChange(null);
+    onImageChange("");
   }, [onImageChange]);
 
   return {

@@ -9,12 +9,13 @@ import Image from "next/image";
 interface ImageUploaderProps {
   previewUrl: string | null;
   onImageChange: (base64String: string | null) => void;
-  errorMessage: string;
+  errorMessage?: string;
 }
 
 export default function ImageUploader({
   previewUrl,
   onImageChange,
+  errorMessage,
 }: ImageUploaderProps) {
   const {
     fileInputRef,
@@ -103,6 +104,11 @@ export default function ImageUploader({
       {error && (
         <div className="absolute -bottom-5 left-0 right-0 flex items-center justify-center bg-red-18 text-red-500 font-medium text-sm">
           {error}
+        </div>
+      )}
+      {errorMessage && (
+        <div className="absolute -bottom-5 left-0 right-0 flex items-center justify-center bg-red-18 text-red-500 font-medium text-sm">
+          {errorMessage}
         </div>
       )}
 

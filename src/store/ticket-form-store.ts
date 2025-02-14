@@ -52,7 +52,7 @@ export const useTicketForm = create<TicketForm>((set, get) => {
   const initialImage = localStorage.getItem("uploadedImage") ?? null;
 
   return {
-    step: Math.min(initialStep, 3),
+    step: initialStep,
     completedSteps: 1,
     ticketType: initialTicketType,
     ticketQuantity: initialTicketQuantity,

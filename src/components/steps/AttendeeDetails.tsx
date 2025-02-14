@@ -19,7 +19,7 @@ const attendeeSchema = z.object({
     .string({ required_error: "Email is rquired" })
     .email("Enter a valid email"),
   specialRequest: z.string().optional(),
-  image: z.string().nullable(),
+  image: z.string().min(2, { message: "Please upload an image" }),
 });
 
 export const AttendeeDetails = () => {
@@ -40,7 +40,7 @@ export const AttendeeDetails = () => {
     name: string;
     email: string;
     specialRequest?: string;
-    image: string | null;
+    image: string;
   }>({
     resolver: zodResolver(attendeeSchema),
     defaultValues: {
@@ -51,35 +51,7 @@ export const AttendeeDetails = () => {
     },
   });
 
-  const uploadToCloudinary = async (base64String: string) => {
-    const formData = new FormData();
-    formData.append("file", base64String);
-    formData.append("upload_preset", "your_upload_preset");
-    formData.append("cloud_name", "your_cloud_name");
-
-    try {
-      const response = await fetch(
-        "https://api.cloudinary.com/v1_1/your_cloud_name/image/upload",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-      const data = await response.json();
-      return data.secure_url;
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      return null;
-    }
-  };
-
-  const onSubmit = async (data: z.infer<typeof attendeeSchema>) => {
-    if (data.image) {
-      const uploadedImageUrl = await uploadToCloudinary(data.image);
-      if (uploadedImageUrl) {
-        data.image = uploadedImageUrl;
-      }
-    }
+  const onSubmit = (data: z.infer<typeof attendeeSchema>) => {
     console.log(data);
     setStep(3);
   };
@@ -99,7 +71,7 @@ export const AttendeeDetails = () => {
           <Controller
             name="image"
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <div className="flex flex-col items-center justify-center gap-2 bg-teal-6/50 text-neutral-98 text-center border-t-teal-10 h-40 w-full">
                 <ImageUploader
                   previewUrl={field.value}
@@ -107,6 +79,7 @@ export const AttendeeDetails = () => {
                     field.onChange(base64String);
                     setImage(base64String);
                   }}
+                  errorMessage={fieldState.error?.message}
                 />
               </div>
             )}
