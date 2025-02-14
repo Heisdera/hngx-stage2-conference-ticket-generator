@@ -58,17 +58,15 @@ export const ReadyTicketPreview = () => {
             <div className="w-full bg-[#07333c] border border-[#123d43] rounded-lg mt-4 h-48 p-1 font-['Roboto'] font-normal max-[360px]:h-40">
               <div className="size-full grid grid-cols-2 overflow-hidde">
                 <div className="p-1 flex flex-col items-start justify-start border-r border-b border-[#12464e] overflow-">
-                  <div className="opacity-30 text-[10px]">Enter your name</div>
+                  <div className="opacity-30 text-[10px]">Name</div>
 
                   <p className="line-clamp-1 overflow-ellipsis text-xs font-bold w-full">
-                    Avi Chukwuasas assassasasasqw
+                    Avi Chukwuasas
                   </p>
                 </div>
 
                 <div className="p-1 flex flex-col items-start justify-start border-b border-[#12464e]">
-                  <div className="opacity-30 text-[10px]">
-                    Enter your email *
-                  </div>
+                  <div className="opacity-30 text-[10px]">Email</div>
                   <div className="text-xs font-bold line-clamp-1 overflow-ellipsis w-full">
                     Userasas@email.com
                   </div>
@@ -81,13 +79,13 @@ export const ReadyTicketPreview = () => {
 
                 <div className="p-1 flex flex-col items-start justify-start">
                   <div className="opacity-30 text-[10px] leading-[15px]">
-                    Ticket for :
+                    Ticket for:
                   </div>
                   <div className="text-[10px] leading-[15px]">1</div>
                 </div>
 
                 <div className="col-span-2 p-1 flex flex-col items-start justify-start border-t border-[#12464e]">
-                  <div className="opacity-30 text-[10px]">Special request?</div>
+                  <div className="opacity-30 text-[10px]">Special request</div>
 
                   <ScrollArea className="text-[10px] h-16 pr-[9px] w-full max-[360px]:h-[48px]">
                     <p>
