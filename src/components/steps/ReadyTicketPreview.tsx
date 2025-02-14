@@ -1,13 +1,17 @@
 import Image from "next/image";
-import { StepHeader } from "../StepHeader";
-import { Button } from "../ui/button";
 import Link from "next/link";
+import { BackButton } from "../BackButton";
+import { NextButton } from "../NextButton";
+import { StepHeader } from "../StepHeader";
 import { ScrollArea } from "../ui/scroll-area";
+import { useTicketForm } from "@/store/ticket-form-store";
 
 export const ReadyTicketPreview = () => {
+  const { step, reset, name, email, image, specialRequest } = useTicketForm();
+
   return (
     <div className="flex flex-col gap-6">
-      <StepHeader title="Ready" currentStep={3} />
+      <StepHeader title="Ready" currentStep={step} />
 
       <div className="space-y-8 flex flex-col items-center max-[360px]:space-y-4">
         <div className="text-center space-y-4 font-['Roboto']">
@@ -27,7 +31,6 @@ export const ReadyTicketPreview = () => {
             <div className="flex flex-col text-xs font-light items-center">
               <div className="flex gap-1 group">
                 📍
-                {/* <MapPin size={20} className="text-destructive" /> */}
                 <Link
                   href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
                     "Plot 2 & 3, Water Corporation Dr, Victoria Island, Annex 106104, Lagos"
@@ -39,15 +42,12 @@ export const ReadyTicketPreview = () => {
                   Landmark Centre
                 </Link>
               </div>
-
-              <p className="Text text-color-grey-98">
-                📅March 15, 2025 | 7:00 PM
-              </p>
+              <p className="text-neutral-98">📅 March 15, 2025 | 7:00 PM</p>
             </div>
 
             <div className="relative size-36 rounded-xl overflow-hidden mt-4">
               <Image
-                src="/assets/minh-pham-HI6gy-p-WBI-unsplash.jpg"
+                src={image || "/assets/minh-pham-HI6gy-p-WBI-unsplash.jpg"}
                 fill
                 className="object-cover"
                 alt="ticket owner profile photo"
@@ -56,43 +56,37 @@ export const ReadyTicketPreview = () => {
             </div>
 
             <div className="w-full bg-[#07333c] border border-[#123d43] rounded-lg mt-4 h-48 p-1 font-['Roboto'] font-normal max-[360px]:h-40">
-              <div className="size-full grid grid-cols-2 overflow-hidde">
-                <div className="p-1 flex flex-col items-start justify-start border-r border-b border-[#12464e] overflow-">
+              <div className="size-full grid grid-cols-2 overflow-hidden">
+                <div className="p-1 flex flex-col items-start justify-start border-r border-b border-[#12464e]">
                   <div className="opacity-30 text-[10px]">Name</div>
-
                   <p className="line-clamp-1 overflow-ellipsis text-xs font-bold w-full">
-                    Avi Chukwuasas
+                    {name}
                   </p>
                 </div>
 
                 <div className="p-1 flex flex-col items-start justify-start border-b border-[#12464e]">
                   <div className="opacity-30 text-[10px]">Email</div>
-                  <div className="text-xs font-bold line-clamp-1 overflow-ellipsis w-full">
-                    Userasas@email.com
-                  </div>
+                  <p className="text-xs font-bold line-clamp-1 overflow-ellipsis w-full">
+                    {email}
+                  </p>
                 </div>
 
                 <div className="p-1 flex flex-col items-start justify-start border-r border-[#12464e]">
                   <div className="opacity-30 text-[10px]">Ticket Type:</div>
-                  <div className="text-[10px]">VIP</div>
+                  <p className="text-[10px]">VIP</p>
                 </div>
 
                 <div className="p-1 flex flex-col items-start justify-start">
                   <div className="opacity-30 text-[10px] leading-[15px]">
                     Ticket for:
                   </div>
-                  <div className="text-[10px] leading-[15px]">1</div>
+                  <p className="text-[10px] leading-[15px]">1</p>
                 </div>
 
                 <div className="col-span-2 p-1 flex flex-col items-start justify-start border-t border-[#12464e]">
                   <div className="opacity-30 text-[10px]">Special request</div>
-
                   <ScrollArea className="text-[10px] h-16 pr-[9px] w-full max-[360px]:h-[48px]">
-                    <p>
-                      Nil ? Or the users sad story they write in there gets this
-                      whole space, Max of three rows Nil ? Or the users sad
-                      story they write in there gets this whole space
-                    </p>
+                    <p>{specialRequest}</p>
                   </ScrollArea>
                 </div>
               </div>
@@ -173,19 +167,8 @@ export const ReadyTicketPreview = () => {
       </div>
 
       <div className="flex flex-col gap-5 mt-6 sm:flex-row-reverse">
-        <Button
-          variant="default"
-          className="focus:ring-offset-1 focus-visible:outline-1 rounded-lg bg-teal-43 hover:bg-teal-31 focus-visible:ring-offset-1 focus-visible:ring-primary focus-visible:ring-white focus-visible:ring-1 focus-visible:ring-offset-black flex-1 text-white"
-        >
-          Get My Ticket
-        </Button>
-
-        <Button
-          variant="outline"
-          className="focus:ring-offset-1 focus-visible:outline-1 rounded-lg bg-transparent border-teal-43 text-teal-43 hover:bg-teal-6 focus-visible:ring-offset-1 focus-visible:ring-primary focus-visible:ring-white focus-visible:ring-1 focus-visible:ring-offset-black flex-1"
-        >
-          Back
-        </Button>
+        <NextButton title="Download Ticket" onClick={() => {}} />
+        <BackButton title="Book Another Ticket" onClick={reset} />
       </div>
     </div>
   );

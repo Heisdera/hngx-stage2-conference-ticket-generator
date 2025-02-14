@@ -2,13 +2,21 @@
 
 import { Button } from "@/components/ui/button";
 import { useImageUpload } from "@/hooks/use-image-upload";
+import clsx from "clsx";
 import { X } from "lucide-react";
 import Image from "next/image";
-import clsx from "clsx";
 
-export default function ImageUploader() {
+interface ImageUploaderProps {
+  previewUrl: string | null;
+  onImageChange: (base64String: string | null) => void;
+  errorMessage: string;
+}
+
+export default function ImageUploader({
+  previewUrl,
+  onImageChange,
+}: ImageUploaderProps) {
   const {
-    previewUrl,
     fileInputRef,
     handleThumbnailClick,
     handleFileChange,
@@ -17,12 +25,13 @@ export default function ImageUploader() {
     handleDragOver,
     handleDragLeave,
     handleDrop,
-  } = useImageUpload();
+    error,
+  } = useImageUpload({ onImageChange, previewUrl });
 
   return (
     <div
       className={clsx(
-        "relative inline-flex",
+        "relative flex",
         "border-dashed border-2 rounded-3xl p-[1px]",
         isDragging ? "border-teal-43" : "border-transparent"
       )}
@@ -31,6 +40,7 @@ export default function ImageUploader() {
       onDrop={handleDrop}
     >
       <Button
+        type="button"
         id="profile-photo"
         variant="outline"
         className="relative overflow-hidden aspect-square size-48 bg-teal-18 rounded-3xl sm:size-56 flex items-center justify-center border-[3px] border-teal-43 cursor-pointer font-normal group focus-visible:ring-offset-1 focus-visible:ring-offset-black focus-visible:ring-primary focus-visible:ring-2"
@@ -83,11 +93,17 @@ export default function ImageUploader() {
           onClick={handleRemove}
           size="icon"
           variant="destructive"
-          className="absolute -right-2 -top-2 size-6 rounded-full border-2 border-background focus-visible:ring-offset-1 focus-visible:ring-primary focus-visible:ring-white focus-visible:ring-2 focus-visible:ring-offset-black"
+          className="absolute -right-2 -top-2 size-6 rounded-full border-2 border-background focus-visible:ring-offset-1 focus-visible:ring-primary focus-visible:ring-2 focus-visible:ring-offset-black"
           aria-label="Remove image"
         >
           <X size={16} />
         </Button>
+      )}
+
+      {error && (
+        <div className="absolute -bottom-5 left-0 right-0 flex items-center justify-center bg-red-18 text-red-500 font-medium text-sm">
+          {error}
+        </div>
       )}
 
       <input

@@ -1,98 +1,115 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { MAX_IMAGE_FILE_SIZE } from "@/utils/constants";
+import { useCallback, useRef, useState } from "react";
+import { z } from "zod";
 
-interface UseImageUploadProps {
-  onUpload?: (url: string) => void;
+interface ImageUploaderProps {
+  previewUrl: string | null;
+  onImageChange: (base64String: string | null) => void;
 }
 
-export function useImageUpload({ onUpload }: UseImageUploadProps = {}) {
-  const previewRef = useRef<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [fileName, setFileName] = useState<string | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
+const imageSchema = z.object({
+  image: z
+    .instanceof(File, { message: "Please upload an image" })
+    .refine((file) => file.size <= MAX_IMAGE_FILE_SIZE, {
+      message: "File size exceeds 3MB",
+    })
+    .refine(
+      (file) => ["image/jpeg", "image/png", "image/gif"].includes(file.type),
+      {
+        message: "File type must be JPEG, PNG, or GIF",
+      }
+    ),
+});
 
-  // Trigger file input on button click
+export function useImageUpload({
+  onImageChange,
+  previewUrl,
+}: ImageUploaderProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const handleThumbnailClick = useCallback(() => {
     fileInputRef.current?.click();
   }, []);
 
-  // Handle file selection from input
   const handleFileChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
-      if (file) {
-        setFileName(file.name);
-        const url = URL.createObjectURL(file);
-        setPreviewUrl(url);
-        previewRef.current = url;
-        onUpload?.(url);
+      if (!file) {
+        setError("Please upload an image");
+        return;
       }
+
+      const validationResult = imageSchema.safeParse({ image: file });
+
+      if (!validationResult.success) {
+        setError(validationResult.error.errors[0].message);
+        return;
+      }
+
+      setError(null);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        onImageChange(base64String);
+      };
+      reader.readAsDataURL(file);
     },
-    [onUpload]
+    [onImageChange]
   );
 
-  // Handle drag over event
   const handleDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
     setIsDragging(true);
   }, []);
 
-  // Handle drag leave event
   const handleDragLeave = useCallback(() => {
     setIsDragging(false);
   }, []);
 
-  // Handle dropped file
   const handleDrop = useCallback(
     (event: React.DragEvent) => {
       event.preventDefault();
       setIsDragging(false);
 
       const file = event.dataTransfer.files?.[0];
-      if (file) {
-        setFileName(file.name);
-        const url = URL.createObjectURL(file);
-        setPreviewUrl(url);
-        previewRef.current = url;
-        onUpload?.(url);
+      if (!file) return;
+
+      const validationResult = imageSchema.safeParse({ image: file });
+
+      if (!validationResult.success) {
+        setError(validationResult.error.errors[0].message);
+        return;
       }
+
+      setError(null);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        onImageChange(base64String);
+      };
+      reader.readAsDataURL(file);
     },
-    [onUpload]
+    [onImageChange]
   );
 
-  // Remove uploaded image
   const handleRemove = useCallback(() => {
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-    }
-    setPreviewUrl(null);
-    setFileName(null);
-    previewRef.current = null;
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  }, [previewUrl]);
-
-  useEffect(() => {
-    return () => {
-      if (previewRef.current) {
-        URL.revokeObjectURL(previewRef.current);
-      }
-    };
-  }, []);
+    onImageChange(null);
+  }, [onImageChange]);
 
   return {
     previewUrl,
-    fileName,
     fileInputRef,
-    isDragging,
     handleThumbnailClick,
     handleFileChange,
     handleRemove,
+    isDragging,
     handleDragOver,
     handleDragLeave,
     handleDrop,
+    error,
   };
 }

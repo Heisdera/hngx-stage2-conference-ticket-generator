@@ -6,6 +6,9 @@ interface StepHeaderProp {
 }
 
 export const StepHeader = ({ title, currentStep }: StepHeaderProp) => {
+  const totalSteps = 3;
+  const barPercentage = (currentStep / totalSteps) * 100;
+
   return (
     <div className="flex flex-col gap-3">
       <div className="flex gap-2 items-end justify-between">
@@ -18,7 +21,7 @@ export const StepHeader = ({ title, currentStep }: StepHeaderProp) => {
 
       {/* Progress Bar */}
       <div className="w-full">
-        <Progress className="h-1 bg-accent -teal-43" value={33} />
+        <Progress className="h-1 bg-accent -teal-43" value={barPercentage} />
       </div>
     </div>
   );
