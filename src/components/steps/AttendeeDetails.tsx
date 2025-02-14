@@ -57,29 +57,29 @@ export const AttendeeDetails = () => {
         </div>
 
         <div className="space-y-2">
-          <Label className="font-light" htmlFor="about">
-            About the project
+          <Label className="font-light" htmlFor="special-request">
+            Special Request
           </Label>
 
           <Textarea
-            id="about"
+            id="special-request"
             className="rounded-lg focus-visible:border-teal-31 focus-visible:ring-offset-1 focus-visible:ring-primary focus-visible:ring-white focus-visible:ring-1 focus-visible:ring-offset-black"
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-5 font-['']">
+        <div className="flex flex-col gap-5 sm:flex-row-reverse font-['']">
           <Button
-            variant="outline"
-            className="focus:ring-offset-1 focus-visible:outline-1 rounded-lg bg-transparent border-teal-43 text-teal-43 hover:bg-teal-6 focus-visible:ring-offset-1 focus-visible:ring-primary focus-visible:ring-white focus-visible:ring-1 focus-visible:ring-offset-black"
+            variant="default"
+            className="focus:ring-offset-1 focus-visible:outline-1 rounded-lg bg-teal-43 text-white hover:bg-teal-31 focus-visible:ring-offset-1 focus-visible:ring-primary focus-visible:ring-white focus-visible:ring-1 focus-visible:ring-offset-black flex-1"
           >
-            Back
+            Get My Ticket
           </Button>
 
           <Button
-            variant="default"
-            className="focus:ring-offset-1 focus-visible:outline-1 rounded-lg bg-teal-43 text-white hover:bg-teal-31 focus-visible:ring-offset-1 focus-visible:ring-primary focus-visible:ring-white focus-visible:ring-1 focus-visible:ring-offset-black"
+            variant="outline"
+            className="focus:ring-offset-1 focus-visible:outline-1 rounded-lg bg-transparent border-teal-43 text-teal-43 hover:bg-teal-6 focus-visible:ring-offset-1 focus-visible:ring-primary focus-visible:ring-white focus-visible:ring-1 focus-visible:ring-offset-black flex-1"
           >
-            Get My Ticket
+            Back
           </Button>
         </div>
       </div>

@@ -117,19 +117,19 @@ export const TicketTypeSelection = () => {
           </Select>
         </div>
 
-        <div className="grid grid-cols-2 gap-5">
+        <div className="flex flex-col gap-5 sm:flex-row-reverse">
           <Button
-            variant="outline"
-            className="focus:ring-offset-1 focus-visible:outline-1 focus-visible:ring-1 focus-visible:ring-offset-ring rounded-lg bg-transparent border-teal-43 text-teal-43 hover:bg-teal-6"
+            variant="default"
+            className="focus:ring-offset-1 focus-visible:outline-1 focus-visible:ring-1 focus-visible:ring-offset-ring rounded-lg bg-teal-43 text-white hover:bg-teal-31 flex-1"
           >
-            Cancel
+            Next
           </Button>
 
           <Button
-            variant="default"
-            className="focus:ring-offset-1 focus-visible:outline-1 focus-visible:ring-1 focus-visible:ring-offset-ring rounded-lg bg-teal-43 text-white hover:bg-teal-31"
+            variant="outline"
+            className="focus:ring-offset-1 focus-visible:outline-1 focus-visible:ring-1 focus-visible:ring-offset-ring rounded-lg bg-transparent border-teal-43 text-teal-43 hover:bg-teal-6 flex-1"
           >
-            Next
+            Cancel
           </Button>
         </div>
       </div>
