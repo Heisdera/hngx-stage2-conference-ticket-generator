@@ -10,7 +10,6 @@ interface TicketType {
 
 interface TicketForm {
   step: number;
-  completedSteps: number;
   ticketType: TicketType | null;
   ticketQuantity: string | null;
   name: string;
@@ -33,7 +32,7 @@ const getLocalStorageData = <T>(key: string, defaultValue: T): T => {
   return storedValue ? (JSON.parse(storedValue) as T) : defaultValue;
 };
 
-export const useTicketForm = create<TicketForm>((set, get) => {
+export const useTicketForm = create<TicketForm>((set) => {
   const initialStep = getLocalStorageData("ticketStep", 1);
   const initialTicketType = getLocalStorageData<TicketType | null>(
     "ticketType",
@@ -53,7 +52,6 @@ export const useTicketForm = create<TicketForm>((set, get) => {
 
   return {
     step: initialStep,
-    completedSteps: 1,
     ticketType: initialTicketType,
     ticketQuantity: initialTicketQuantity,
     name: initialName,
@@ -62,18 +60,11 @@ export const useTicketForm = create<TicketForm>((set, get) => {
     image: initialImage,
 
     setStep: (newStep) => {
-      const { completedSteps } = get();
-      if (newStep > 3 || newStep < 1) return;
+      set({
+        step: newStep,
+      });
 
-      if (newStep <= completedSteps + 1) {
-        set({ step: newStep });
-
-        if (newStep > completedSteps) {
-          set({ completedSteps: newStep });
-        }
-
-        localStorage.setItem("ticketStep", JSON.stringify(newStep));
-      }
+      localStorage.setItem("ticketStep", JSON.stringify(newStep));
     },
 
     setName: (name) => {
@@ -113,7 +104,6 @@ export const useTicketForm = create<TicketForm>((set, get) => {
     reset: () => {
       set({
         step: 1,
-        completedSteps: 1,
         ticketType: null,
         ticketQuantity: null,
         name: "",
