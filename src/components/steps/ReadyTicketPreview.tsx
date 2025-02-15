@@ -12,10 +12,10 @@ export const ReadyTicketPreview = () => {
     reset,
     name,
     email,
-    image,
     specialRequest,
     ticketType,
     ticketQuantity,
+    image_url,
   } = useTicketForm();
 
   return (
@@ -56,7 +56,7 @@ export const ReadyTicketPreview = () => {
 
             <div className="relative size-36 rounded-xl overflow-hidden mt-4">
               <Image
-                src={image || "/assets/minh-pham-HI6gy-p-WBI-unsplash.jpg"}
+                src={image_url || "/assets/null.jpg"}
                 fill
                 className="object-cover"
                 alt="ticket owner profile photo"

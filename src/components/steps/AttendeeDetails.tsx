@@ -15,9 +15,7 @@ import { Textarea } from "../ui/textarea";
 
 const attendeeSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z
-    .string({ required_error: "Email is rquired" })
-    .email("Enter a valid email"),
+  email: z.string().min(2, "Email is required").email("Enter a valid email"),
   specialRequest: z.string().optional(),
   image: z.string().min(2, { message: "Please upload an image" }),
 });
@@ -34,6 +32,9 @@ export const AttendeeDetails = () => {
     setEmail,
     setSpecialRequest,
     setImage,
+    setImageUrl,
+    fileName,
+    setLocalImageUploadError,
   } = useTicketForm();
 
   const { control, handleSubmit, formState } = useForm<{
@@ -51,9 +52,62 @@ export const AttendeeDetails = () => {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof attendeeSchema>) => {
+  // Yeah, I used DeepSeek I can't possibly keep this in my head :)
+  const convertBase64StringToFile = (
+    base64String: string,
+    filename: string
+  ) => {
+    // Split the Base64 string into the MIME type and the data
+    const [mimeType, base64Data] = base64String.split(";base64,");
+
+    // Decode the Base64 data
+    const byteCharacters = atob(base64Data);
+
+    // Convert the decoded data to a byte array
+    const byteNumbers = new Array(byteCharacters.length);
+
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+
+    // Create a Blob from the byte array
+    const blob = new Blob([byteArray], { type: mimeType });
+
+    // Create a File object from the Blob (optional, if you need a File object)
+    const file = new File([blob], filename, { type: mimeType });
+
+    return file;
+  };
+
+  const onSubmit = async (data: z.infer<typeof attendeeSchema>) => {
     console.log(data);
-    setStep(3);
+
+    const file = convertBase64StringToFile(data.image, fileName);
+
+    try {
+      if (!file) {
+        throw new Error("No file selected");
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result: { secure_url: string } = await response.json();
+      if (!result) {
+        throw new Error("Failed to upload file");
+      }
+
+      setImageUrl(result.secure_url);
+      setStep(3);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -175,7 +229,18 @@ export const AttendeeDetails = () => {
         </div>
 
         <div className="flex flex-col gap-5 sm:flex-row-reverse">
-          <NextButton title="Get My Ticket" type="submit" />
+          <NextButton
+            title={
+              formState.isSubmitting
+                ? "Generating your ticket"
+                : "Get My Ticket"
+            }
+            type="submit"
+            onClick={() => {
+              setLocalImageUploadError(null);
+            }}
+            disabled={formState.isSubmitting}
+          />
           <BackButton title="Back" onClick={() => setStep(1)} />
         </div>
       </form>

@@ -5,6 +5,7 @@ import { useImageUpload } from "@/hooks/use-image-upload";
 import clsx from "clsx";
 import { X } from "lucide-react";
 import Image from "next/image";
+import { useEffect } from "react";
 
 interface ImageUploaderProps {
   previewUrl: string | null;
@@ -26,8 +27,15 @@ export default function ImageUploader({
     handleDragOver,
     handleDragLeave,
     handleDrop,
-    error,
+    localImageUploadError,
+    setLocalImageUploadError,
   } = useImageUpload({ onImageChange, previewUrl });
+
+  useEffect(() => {
+    if (errorMessage && setLocalImageUploadError) {
+      setLocalImageUploadError(null);
+    }
+  }, [errorMessage, setLocalImageUploadError]);
 
   return (
     <div
@@ -64,7 +72,7 @@ export default function ImageUploader({
               className="mx-auto"
               alt="cloud upload icon"
             />
-            <p className="text-sm text-neutral-98 leading-relaxed text-center text-wrap">
+            <p className="text-sm text-neutral-98 leading-relaxed text-center text-wrap whitespace-normal">
               Drag & drop or click to upload
             </p>
           </div>
@@ -82,7 +90,7 @@ export default function ImageUploader({
               className="mx-auto"
               alt="cloud upload icon"
             />
-            <p className="text-sm text-neutral-98 leading-relaxed text-center text-wrap">
+            <p className="text-sm text-neutral-98 leading-relaxed text-center text-wrap whitespace-normal">
               Drag & drop or click to upload
             </p>
           </div>
@@ -101,12 +109,19 @@ export default function ImageUploader({
         </Button>
       )}
 
-      {error && (
+      {errorMessage && localImageUploadError && (
         <div className="absolute -bottom-5 left-0 right-0 flex items-center justify-center bg-red-18 text-red-500 font-medium text-sm">
-          {error}
+          {localImageUploadError}
         </div>
       )}
-      {errorMessage && (
+
+      {localImageUploadError && !errorMessage && (
+        <div className="absolute -bottom-5 left-0 right-0 flex items-center justify-center bg-red-18 text-red-500 font-medium text-sm">
+          {localImageUploadError}
+        </div>
+      )}
+
+      {errorMessage && !localImageUploadError && (
         <div className="absolute -bottom-5 left-0 right-0 flex items-center justify-center bg-red-18 text-red-500 font-medium text-sm">
           {errorMessage}
         </div>

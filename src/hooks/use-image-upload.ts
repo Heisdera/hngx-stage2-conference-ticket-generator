@@ -1,5 +1,6 @@
 "use client";
 
+import { useTicketForm } from "@/store/ticket-form-store";
 import { MAX_IMAGE_FILE_SIZE } from "@/utils/constants";
 import { useCallback, useRef, useState } from "react";
 import { z } from "zod";
@@ -21,9 +22,10 @@ export function useImageUpload({
   onImageChange,
   previewUrl,
 }: ImageUploaderProps) {
+  const { setFileName, localImageUploadError, setLocalImageUploadError } =
+    useTicketForm();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const handleThumbnailClick = useCallback(() => {
     fileInputRef.current?.click();
@@ -37,11 +39,12 @@ export function useImageUpload({
       const validationResult = imageSchema.safeParse({ image: file });
 
       if (!validationResult.success) {
-        setError(validationResult.error.errors[0].message);
+        setLocalImageUploadError(validationResult.error.errors[0].message);
         return;
       }
 
-      setError(null);
+      setFileName(file.name);
+      setLocalImageUploadError(null);
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result as string;
@@ -49,7 +52,7 @@ export function useImageUpload({
       };
       reader.readAsDataURL(file);
     },
-    [onImageChange]
+    [onImageChange, setFileName, setLocalImageUploadError]
   );
 
   const handleDragOver = useCallback((event: React.DragEvent) => {
@@ -72,11 +75,12 @@ export function useImageUpload({
       const validationResult = imageSchema.safeParse({ image: file });
 
       if (!validationResult.success) {
-        setError(validationResult.error.errors[0].message);
+        setLocalImageUploadError(validationResult.error.errors[0].message);
         return;
       }
 
-      setError(null);
+      setFileName(file.name);
+      setLocalImageUploadError(null);
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result as string;
@@ -84,12 +88,13 @@ export function useImageUpload({
       };
       reader.readAsDataURL(file);
     },
-    [onImageChange]
+    [onImageChange, setFileName, setLocalImageUploadError]
   );
 
   const handleRemove = useCallback(() => {
     onImageChange("");
-  }, [onImageChange]);
+    setFileName("");
+  }, [onImageChange, setFileName]);
 
   return {
     previewUrl,
@@ -101,6 +106,7 @@ export function useImageUpload({
     handleDragOver,
     handleDragLeave,
     handleDrop,
-    error,
+    localImageUploadError,
+    setLocalImageUploadError,
   };
 }

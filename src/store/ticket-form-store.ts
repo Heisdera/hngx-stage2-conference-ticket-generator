@@ -16,6 +16,9 @@ interface TicketForm {
   email: string;
   specialRequest: string | null;
   image: string | null;
+  image_url: string | null;
+  fileName: string;
+  localImageUploadError: string | null;
 
   setStep: (step: number) => void;
   setName: (name: string) => void;
@@ -24,6 +27,9 @@ interface TicketForm {
   setTicketType: (ticketType: TicketType | null) => void;
   setTicketQuantity: (quantity: string | null) => void;
   setImage: (image: string | null) => void;
+  setImageUrl: (imageUrl: string | null) => void;
+  setFileName: (fileName: string) => void;
+  setLocalImageUploadError: (error: string | null) => void;
   reset: () => void;
 }
 
@@ -49,6 +55,8 @@ export const useTicketForm = create<TicketForm>((set) => {
     null
   );
   const initialImage = localStorage.getItem("uploadedImage") ?? null;
+  const initialImageUrl = getLocalStorageData("image_url", "");
+  const initialFileName = getLocalStorageData("fileName", "");
 
   return {
     step: initialStep,
@@ -58,6 +66,9 @@ export const useTicketForm = create<TicketForm>((set) => {
     email: initialEmail,
     specialRequest: initialSpecialRequest,
     image: initialImage,
+    image_url: initialImageUrl,
+    fileName: initialFileName,
+    localImageUploadError: null,
 
     setStep: (newStep) => {
       set({
@@ -101,6 +112,20 @@ export const useTicketForm = create<TicketForm>((set) => {
       }
     },
 
+    setImageUrl: (imageUrl) => {
+      set({ image_url: imageUrl });
+      localStorage.setItem("image_url", JSON.stringify(imageUrl));
+    },
+
+    setFileName(fileName) {
+      set({ fileName });
+      localStorage.setItem("fileName", JSON.stringify(fileName));
+    },
+
+    setLocalImageUploadError: (error) => {
+      set({ localImageUploadError: error });
+    },
+
     reset: () => {
       set({
         step: 1,
@@ -110,6 +135,9 @@ export const useTicketForm = create<TicketForm>((set) => {
         email: "",
         specialRequest: null,
         image: null,
+        image_url: null,
+        fileName: "",
+        localImageUploadError: null,
       });
 
       localStorage.removeItem("ticketStep");
@@ -119,6 +147,8 @@ export const useTicketForm = create<TicketForm>((set) => {
       localStorage.removeItem("email");
       localStorage.removeItem("specialRequest");
       localStorage.removeItem("uploadedImage");
+      localStorage.removeItem("image_url");
+      localStorage.removeItem("fileName");
     },
   };
 });
